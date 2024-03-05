@@ -1,3 +1,148 @@
+# Lección 08 con el mejor grupo
 ```{python}
-1 + 1
+import pandas as pd
+
+
+sensores = pd.read_csv('sensors.csv')
+sensores
+```
+
+```{python}
+agrupados = sensores.groupby('sensor')
+agrupados
+```
+
+```{python}
+agrupados.ngroups
+```
+
+```{python}
+agrupados.groups
+```
+
+```{python}
+for llave, valor in agrupados:
+    print(llave)
+    print(valor)
+```
+
+```{python}
+def f(x):
+    return 2*x + 1
+
+f(x=3)
+f(x=1000)
+```
+
+```{python}
+def imprimir_grupos(valores_agrupados):
+    for llave, valor in valores_agrupados:
+        print(llave)
+        print(valor)
+
+imprimir_grupos(agrupados)
+```
+
+```{python}
+agrupados.size()
+```
+
+```{python}
+agrupados.count()
+```
+
+```{python}
+agrupados.get_group('orientation')
+```
+
+```{python}
+agrupados.get_group('accel')
+```
+
+```{python}
+agrupados.nth(0)
+```
+
+```{python}
+agrupados.nth(2)
+```
+
+```{python}
+agrupacion_llave_multiple = sensores.groupby(['sensor', 'axis'])
+```
+
+```{python}
+imprimir_grupos(agrupacion_llave_multiple)
+```
+
+```{python}
+sensores.describe()
+```
+
+```{python}
+agrupacion_llave_multiple.describe()
+```
+
+```{python}
+im = sensores.copy()
+im = im.set_index(['sensor', 'axis'])
+im
+```
+
+```{python}
+agrupacion_por_nindices = im.groupby(level=['sensor', 'axis'])
+imprimir_grupos(agrupacion_por_nindices)
+```
+
+```{python}
+import numpy as np
+
+print(sensores)
+agrupacion_por_nindices.agg(np.mean).rename(columns={
+    'interval': 'interval_mean',
+    'reading': 'reading_mean'
+})
+```
+
+```{python}
+agrupacion_por_nindices.agg([np.sum, np.std])
+```
+
+```{python}
+agrupacion_por_nindices.agg({
+    'interval': len,
+    'reading': np.mean
+})
+```
+
+```{python}
+df = pd.DataFrame ({
+    'Label': ['A', 'C', 'B', 'A', 'C'],
+    'Values': [0, 1, 2, 3, 4],
+    'Values2': [5, 6, 7, 8, 9],
+    'Noise': ['foo', 'bar', 'baz', 'foobar', 'barbaz']
+})
+df
+```
+
+```{python}
+agrupados = df.groupby('Label')
+imprimir_grupos(agrupados)
+```
+
+```{python}
+def normalize(grp):
+    return grp + 10
+
+agrupados['Values'].transform(normalize)
+```
+
+```{python}
+df['ValuesTranform'] = agrupados['Values'].transform(lambda x: 2*x+1)
+
+df
+```
+
+```{python}
+agrupados.filter(lambda x: len(x)>1)
 ```
